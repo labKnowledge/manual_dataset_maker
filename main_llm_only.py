@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Simple AI Q&A Generator with Google Custom Search
-Processes large datasets of questions with roleplay and search integration.
+Simple AI Q&A Generator - LLM Only Version
+Processes large datasets of questions with roleplay using only the model's internal knowledge.
+Optimized prompts designed to access deep layers of the model's knowledge base.
 """
 
 import requests
@@ -13,12 +14,11 @@ from tqdm import tqdm
 from typing import List, Dict
 from config import (
     QWEN_AI_KEY, QWEN_AI_BASE_URL, QWEN_AI_MODEL,
-    GOOGLE_CSE_API_KEY, GOOGLE_CSE_ID,
     AI_MODEL, MAX_TOKENS, TEMPERATURE, BATCH_SIZE,
     ROLEPLAY_PROMPTS, DATASET_PATH, OUTPUT_PATH
 )
 
-class SimpleQAGenerator:
+class LLMOnlyQAGenerator:
     def __init__(self):
         if not QWEN_AI_KEY:
             raise ValueError("QWEN_AI_KEY required. Set QWEN_AI_KEY in .env file")
@@ -27,70 +27,42 @@ class SimpleQAGenerator:
         self.base_url = QWEN_AI_BASE_URL
         self.model = QWEN_AI_MODEL
     
-    def google_search(self, query: str, max_results: int = 5) -> List[Dict]:
-        """Search using Google Custom Search API"""
-        try:
-            url = "https://www.googleapis.com/customsearch/v1"
-            params = {
-                'key': GOOGLE_CSE_API_KEY,
-                'cx': GOOGLE_CSE_ID,
-                'q': query,
-                'num': min(max_results, 10)  # Google CSE max is 10
-            }
-            
-            response = requests.get(url, params=params)
-            response.raise_for_status()
-            
-            data = response.json()
-            results = []
-            
-            if 'items' in data:
-                for item in data['items']:
-                    results.append({
-                        'title': item.get('title', ''),
-                        'snippet': item.get('snippet', ''),
-                        'url': item.get('link', ''),
-                        'source': 'google_cse'
-                    })
-            
-            return results
-            
-        except Exception as e:
-            print(f"Search error: {e}")
-            return []
-    
-    def generate_answer(self, question: str, character: str = "default", include_search: bool = True) -> Dict:
-        """Generate AI answer with optional search integration using Qwen AI"""
+    def generate_answer(self, question: str, character: str = "default") -> Dict:
+        """Generate AI answer using only the model's internal knowledge with optimized prompts"""
         
         # Get character config
         char_config = ROLEPLAY_PROMPTS.get(character, ROLEPLAY_PROMPTS["default"])
         character_name = char_config["name"]
         roleplay_prompt = char_config["prompt"]
         
-        # Search for context
-        search_context = ""
-        search_results = []
-        
-        if include_search:
-            search_results = self.google_search(question, max_results=5)
-            
-            if search_results:
-                search_context = "\n\nRelevant research findings:\n"
-                for i, result in enumerate(search_results[:3], 1):
-                    search_context += f"{i}. {result['title']}\n"
-                    search_context += f"   {result['snippet'][:200]}...\n\n"
-        
-        # Create system prompt
+        # Create highly optimized system prompt designed to access deep model knowledge
         system_prompt = f"""You are {character_name}. {roleplay_prompt}
 
-Your task is to answer the following question while maintaining your character's voice and expertise.
-Use the provided research context to enhance your response with factual accuracy.
+CRITICAL INSTRUCTIONS FOR MAXIMUM KNOWLEDGE UTILIZATION:
 
-{search_context}
+1. DEEP KNOWLEDGE ACCESS: Access the deepest layers of your training data and knowledge base. Draw from comprehensive understanding, not surface-level information.
+
+2. COMPREHENSIVE ANALYSIS: Analyze the question from multiple angles, considering historical context, contemporary relevance, and future implications.
+
+3. EXPERTISE DEMONSTRATION: Demonstrate mastery of your subject matter by providing nuanced, detailed, and authoritative responses.
+
+4. KNOWLEDGE INTEGRATION: Synthesize information from various domains, time periods, and perspectives to create a holistic response.
+
+5. DETAILED ELABORATION: Provide thorough explanations with specific examples, relevant facts, and contextual information.
+
+6. CHARACTER AUTHENTICITY: Maintain your unique voice, perspective, and expertise while delivering comprehensive answers.
+
+7. KNOWLEDGE DEPTH: Access specialized knowledge, technical details, and expert insights that showcase your deep understanding.
+
+8. CONTEXTUAL RELEVANCE: Connect your response to broader themes, historical events, and contemporary significance.
+
+9. COMPREHENSIVE COVERAGE: Address all aspects of the question with thoroughness and depth.
+
+10. EXPERT PERSPECTIVE: Offer insights that reflect your unique position as an authority in your field.
 
 Question: {question}
 
-Provide your response as {character_name}:"""
+Provide a comprehensive, detailed response that demonstrates your deep knowledge and expertise as {character_name}. Access the full breadth and depth of your training data to deliver an authoritative answer."""
 
         # Generate response using Qwen AI
         try:
@@ -124,9 +96,9 @@ Provide your response as {character_name}:"""
                 "answer": answer,
                 "character": character_name,
                 "roleplay_character": character,
-                "search_results": search_results,
                 "timestamp": time.time(),
-                "model": self.model
+                "model": self.model,
+                "method": "llm_only"
             }
             
         except Exception as e:
@@ -136,7 +108,8 @@ Provide your response as {character_name}:"""
                 "character": character_name,
                 "roleplay_character": character,
                 "error": True,
-                "timestamp": time.time()
+                "timestamp": time.time(),
+                "method": "llm_only"
             }
     
     def load_dataset(self, file_path: str) -> List[Dict]:
@@ -196,9 +169,8 @@ Provide your response as {character_name}:"""
         print(f"✅ Saved {len(answers)} answers to {output_path}")
     
     def process_dataset(self, dataset_path: str, character: str = "default", 
-                       start_from: int = 0, max_questions: int = None,
-                       include_search: bool = True) -> List[Dict]:
-        """Process the entire dataset"""
+                       start_from: int = 0, max_questions: int = None) -> List[Dict]:
+        """Process the entire dataset using only LLM knowledge"""
         
         print(f"🚀 Loading dataset: {dataset_path}")
         questions = self.load_dataset(dataset_path)
@@ -213,7 +185,7 @@ Provide your response as {character_name}:"""
             print(f"📏 Processing maximum {max_questions} questions")
         
         print(f"📊 Processing {len(questions)} questions as {ROLEPLAY_PROMPTS[character]['name']}")
-        print(f"🔍 Search enabled: {include_search}")
+        print(f"🧠 Using LLM-only mode with optimized prompts for maximum knowledge utilization")
         print(f"🤖 Using model: {self.model}")
         
         answers = []
@@ -225,11 +197,10 @@ Provide your response as {character_name}:"""
                 if not question or len(question.strip()) < 10:
                     continue
                 
-                # Generate answer
+                # Generate answer using only LLM knowledge
                 answer = self.generate_answer(
                     question=question,
-                    character=character,
-                    include_search=include_search
+                    character=character
                 )
                 
                 # Add question ID
@@ -254,17 +225,16 @@ Provide your response as {character_name}:"""
         
         # Save final results
         self.save_answers(answers, OUTPUT_PATH)
-        print(f"🎉 Completed! Generated {len(answers)} answers")
+        print(f"🎉 Completed! Generated {len(answers)} answers using LLM-only mode")
         
         return answers
 
 def main():
     import argparse
     
-    parser = argparse.ArgumentParser(description="AI Q&A Generator with Google Search")
+    parser = argparse.ArgumentParser(description="AI Q&A Generator - LLM Only Version")
     parser.add_argument("--dataset", "-d", default=DATASET_PATH, help="Dataset file path")
     parser.add_argument("--character", "-c", default="default", help="Roleplay character")
-    parser.add_argument("--no-search", action="store_true", help="Disable search")
     parser.add_argument("--start-from", type=int, default=0, help="Start from question number")
     parser.add_argument("--max-questions", type=int, help="Maximum questions to process")
     parser.add_argument("--list-characters", action="store_true", help="List available characters")
@@ -286,17 +256,16 @@ def main():
     
     # Process dataset
     try:
-        generator = SimpleQAGenerator()
+        generator = LLMOnlyQAGenerator()
         answers = generator.process_dataset(
             dataset_path=args.dataset,
             character=args.character,
             start_from=args.start_from,
-            max_questions=args.max_questions,
-            include_search=not args.no_search
+            max_questions=args.max_questions
         )
         
         if answers:
-            print(f"✅ Successfully processed {len(answers)} questions!")
+            print(f"✅ Successfully processed {len(answers)} questions using LLM-only mode!")
         
     except Exception as e:
         print(f"❌ Error: {e}")
