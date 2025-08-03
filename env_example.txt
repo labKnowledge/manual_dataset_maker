@@ -1,0 +1,11 @@
+# API Keys (Required)
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Optional API Keys (for enhanced search capabilities)
+SERPER_API_KEY=your_serper_api_key_here
+WOLFRAM_ALPHA_API_KEY=your_wolfram_alpha_api_key_here
+
+# Configuration Notes:
+# - OPENAI_API_KEY: Required for AI responses (get from https://platform.openai.com/)
+# - SERPER_API_KEY: Optional, for Google search results (get from https://serper.dev/)
+# - WOLFRAM_ALPHA_API_KEY: Optional, for mathematical computations (get from https://www.wolframalpha.com/) 
