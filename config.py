@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from time import time
 
 load_dotenv()
 
@@ -24,7 +25,7 @@ MAX_RETRIES = 3
 
 # File Paths
 DATASET_PATH = "NelsonMandelaFormattedQuestions.json"
-OUTPUT_PATH = "output/answers.jsonl"
+OUTPUT_PATH = f"output/answers_{time()}.jsonl"
 
 # Roleplay Characters
 ROLEPLAY_PROMPTS = {
