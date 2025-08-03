@@ -7,11 +7,13 @@ load_dotenv()
 QWEN_AI_KEY = os.getenv("QWEN_AI_KEY")
 QWEN_AI_BASE_URL = os.getenv("QWEN_AI_BASE_URL")
 QWEN_AI_MODEL = os.getenv("QWEN_AI_MODEL", "qwen-plus")
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+CLAUDE_COOKIE = os.getenv("CLAUDE_COOKIE")
 GOOGLE_CSE_API_KEY = os.getenv("GOOGLE_SEARCH_KEY")
 GOOGLE_CSE_ID = os.getenv("GOOGLE_SEARCH_CX")
 
 # Model Configuration
-AI_MODEL = QWEN_AI_MODEL
+AI_MODEL = os.getenv("AI_MODEL", "claude-3-5-sonnet-20241022")  # Default to Claude Code SDK model
 MAX_TOKENS = 2000
 TEMPERATURE = 0.7
 
@@ -21,7 +23,7 @@ DELAY_BETWEEN_REQUESTS = 1
 MAX_RETRIES = 3
 
 # File Paths
-DATASET_PATH = "dataset/questions.csv"
+DATASET_PATH = "NelsonMandelaFormattedQuestions.json"
 OUTPUT_PATH = "output/answers.jsonl"
 
 # Roleplay Characters

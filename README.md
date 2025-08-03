@@ -1,6 +1,11 @@
-# AI Q&A Generator with Google Search
+# AI Q&A Generator with Multiple AI Backends
 
-Simple, efficient Python script to generate AI-powered answers for large datasets of questions with roleplay capabilities and Google Custom Search integration. Uses Qwen AI (Alibaba) for responses.
+Simple, efficient Python script to generate AI-powered answers for large datasets of questions with roleplay capabilities. Supports multiple AI backends:
+
+- **Claude Login** with cookie-based authentication (no API key needed)
+- **Claude Code SDK** with full agentic capabilities (API key + CLI required)
+- **Qwen AI** (Alibaba) with Google Custom Search integration
+- **LLM-only mode** for internal knowledge access
 
 ## 🚀 Quick Start
 
@@ -10,6 +15,20 @@ Simple, efficient Python script to generate AI-powered answers for large dataset
    ```
 
 2. **Set up your environment variables in `.env`:**
+   
+   **For Claude Login (No API key needed):**
+   ```bash
+   CLAUDE_COOKIE=your_claude_session_cookie_here
+   ```
+   *See [CLAUDE_LOGIN_GUIDE.md](CLAUDE_LOGIN_GUIDE.md) for detailed instructions*
+   
+   **For Claude Code SDK (API key + CLI required):**
+   ```bash
+   ANTHROPIC_API_KEY=your_anthropic_api_key_here
+   ```
+   *Also requires: `npm install -g @anthropic-ai/claude-code`*
+   
+   **For Qwen AI with Google Search:**
    ```bash
    QWEN_AI_KEY=your_qwen_api_key_here
    QWEN_AI_BASE_URL=https://dashscope-intl.aliyuncs.com/compatible-mode/v1
@@ -18,23 +37,59 @@ Simple, efficient Python script to generate AI-powered answers for large dataset
    GOOGLE_SEARCH_CX=your_google_search_cx
    ```
 
-3. **Run the script:**
+3. **Test your setup (optional):**
+   ```bash
+   # Test Claude Login
+   python test_claude_login.py
+   
+   # Test Claude Code SDK
+   python test_claude_code.py
+   ```
+   
+   **Prerequisites for Claude Code SDK:**
+   ```bash
+   npm install -g @anthropic-ai/claude-code
+   ```
+
+4. **Run the script:**
+   
+   **Claude Login (No API key needed):**
+   ```bash
+   python main_claude_login.py --dataset your_questions.csv --character einstein
+   ```
+   
+   **Claude Code SDK (API key + CLI required):**
+   ```bash
+   python main_claude_code.py --dataset your_questions.csv --character einstein
+   ```
+   
+   **Qwen AI with Google Search:**
    ```bash
    python main.py --dataset your_questions.csv --character einstein
+   ```
+   
+   **LLM-only mode:**
+   ```bash
+   python main_llm_only.py --dataset your_questions.csv --character einstein
    ```
 
 ## 📋 Features
 
-- **Qwen AI Integration**: Uses Alibaba's Qwen AI model for responses
-- **Google Custom Search Integration**: Uses Google Custom Search API for research
-- **AI Roleplay**: Answer as Einstein, Newton, Darwin, Tesla, Curie, or Academic Scholar
+- **Multiple AI Backends**: 
+  - Claude Login with cookie-based authentication (no API key needed)
+  - Claude Code SDK with full agentic capabilities (API key + CLI required)
+  - Qwen AI with Google Custom Search integration
+  - LLM-only mode for internal knowledge access
+- **AI Roleplay**: Answer as Einstein, Newton, Darwin, Tesla, Curie, Mandela, or Academic Scholar
 - **Large Dataset Support**: Efficiently processes thousands of questions
 - **Progress Saving**: Automatic progress saving every 50 questions
 - **Multiple Formats**: Supports CSV, JSON, and TXT input files
 - **Resume Capability**: Continue from where you left off
+- **Agentic Capabilities**: Web search, code execution, file reading (Claude Code SDK)
 
 ## 🎭 Available Characters
 
+- `mandela` - Nelson Mandela (Leadership & Human Rights)
 - `einstein` - Albert Einstein (Physics & Philosophy)
 - `newton` - Isaac Newton (Mathematics & Physics)  
 - `darwin` - Charles Darwin (Biology & Evolution)
@@ -45,20 +100,23 @@ Simple, efficient Python script to generate AI-powered answers for large dataset
 ## 📊 Usage Examples
 
 ```bash
-# Basic usage
+# Claude Code SDK (Recommended)
+python main_claude_code.py --dataset questions.csv --character einstein
+
+# Qwen AI with Google Search
 python main.py --dataset questions.csv --character einstein
 
+# LLM-only mode
+python main_llm_only.py --dataset questions.csv --character einstein
+
 # Process only first 100 questions
-python main.py --dataset questions.csv --max-questions 100
+python main_claude_code.py --dataset questions.csv --max-questions 100
 
 # Start from question 500
-python main.py --dataset questions.csv --start-from 500
-
-# Disable search (faster, less factual)
-python main.py --dataset questions.csv --no-search
+python main_claude_code.py --dataset questions.csv --start-from 500
 
 # List available characters
-python main.py --list-characters
+python main_claude_code.py --list-characters
 ```
 
 ## 📁 Dataset Format
@@ -105,10 +163,10 @@ Edit `config.py` to modify:
 1. **Process in chunks:**
    ```bash
    # First 1000 questions
-   python main.py --dataset large.csv --max-questions 1000
+   python main_claude_code.py --dataset large.csv --max-questions 1000
    
    # Continue from 1000
-   python main.py --dataset large.csv --start-from 1000 --max-questions 1000
+   python main_claude_code.py --dataset large.csv --start-from 1000 --max-questions 1000
    ```
 
 2. **Monitor progress:**
@@ -123,12 +181,15 @@ Edit `config.py` to modify:
 ## 🛠️ Requirements
 
 - Python 3.8+
-- Qwen AI API key (Alibaba)
-- Google Custom Search API
+- **Claude Code SDK**: Anthropic API key (recommended)
+- **Qwen AI**: Qwen AI API key (Alibaba) + Google Custom Search API
 
 ## 📄 Files
 
-- `main.py` - Main script
+- `main_claude_code.py` - Claude Code SDK version (recommended)
+- `main.py` - Qwen AI with Google Search version
+- `main_llm_only.py` - LLM-only version
+- `test_claude_code.py` - Test script for Claude Code SDK
 - `config.py` - Configuration settings
 - `requirements.txt` - Python dependencies
 - `README.md` - This file 
