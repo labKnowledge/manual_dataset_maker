@@ -98,11 +98,11 @@ Please provide a comprehensive answer as {character_name}, using your capabiliti
                             result_text = result
                         break
             
-            # Print progress
-            if result_text:
-                print(f"✅ Generated answer for: {question[:50]}...")
-            else:
-                print(f"⚠️ No answer extracted for: {question[:50]}...")
+            # # Print progress
+            # if result_text:
+            #     print(f"✅ Generated answer for: {question[:50]}...")
+            # else:
+            #     print(f"⚠️ No answer extracted for: {question[:50]}...")
             
             return {
                 "question": question,
