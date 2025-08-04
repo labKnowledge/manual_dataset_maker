@@ -12,6 +12,8 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 CLAUDE_COOKIE = os.getenv("CLAUDE_COOKIE")
 GOOGLE_CSE_API_KEY = os.getenv("GOOGLE_SEARCH_KEY")
 GOOGLE_CSE_ID = os.getenv("GOOGLE_SEARCH_CX")
+LOCAL_AI_MODEL = os.getenv("LOCAL_AI_MODEL", "hf.co/unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:UD-Q4_K_XL")
+LOCAL_AI_BASE_URL = os.getenv("LOCAL_AI_BASE_URL", "http://localhost:11434/v1")
 
 # Model Configuration
 AI_MODEL = os.getenv("AI_MODEL", "claude-3-5-sonnet-20241022")  # Default to Claude Code SDK model
