@@ -287,43 +287,72 @@ class QuestionGenerator:
         all_questions = []
         questions_per_type = target_count // len(question_types)
         
+        # Show target distribution
+        print(f"\n📋 Target distribution:")
+        for q_type in question_types:
+            print(f"   {q_type}: {questions_per_type} questions")
+        print()
+        
+        # Create overall progress tracking
+        total_generated = 0
+        
         try:
-            for question_type in question_types:
-                print(f"\n📝 Generating {questions_per_type} {question_type} questions...")
+            for i, question_type in enumerate(question_types, 1):
+                print(f"\n📝 [{i}/{len(question_types)}] Generating {questions_per_type} {question_type} questions...")
                 
-                # Generate in batches to avoid token limits
-                batch_size = 50
+                # Track progress for this type
+                type_questions = []
+                batch_size = 10  # Smaller batches for better progress tracking
                 num_batches = (questions_per_type + batch_size - 1) // batch_size
                 
-                for batch in tqdm(range(num_batches), desc=f"Generating {question_type} questions"):
-                    batch_size_actual = min(batch_size, questions_per_type - batch * batch_size)
+                # Create progress bar for individual questions
+                with tqdm(total=questions_per_type, desc=f"Generating {question_type} questions", 
+                         unit="question") as pbar:
                     
-                    if batch_size_actual <= 0:
-                        break
-                    
-                    questions = self.generate_questions(
-                        topic=topic,
-                        question_type=question_type,
-                        num_questions=batch_size_actual
-                    )
-                    
-                    # Add metadata
-                    for question in questions:
-                        question["topic"] = topic
-                        question["generation_type"] = question_type
-                        question["batch"] = batch
-                        question["timestamp"] = time.time()
-                    
-                    all_questions.extend(questions)
-                    
-                    # Save progress every batch
-                    temp_path = f"{output_path}.temp"
-                    self.save_questions(all_questions, temp_path)
-                    
-                    # Rate limiting
-                    time.sleep(2)
+                    for batch in range(num_batches):
+                        batch_size_actual = min(batch_size, questions_per_type - batch * batch_size)
+                        
+                        if batch_size_actual <= 0:
+                            break
+                        
+                        questions = self.generate_questions(
+                            topic=topic,
+                            question_type=question_type,
+                            num_questions=batch_size_actual
+                        )
+                        
+                        # Add metadata
+                        for question in questions:
+                            question["topic"] = topic
+                            question["generation_type"] = question_type
+                            question["batch"] = batch
+                            question["timestamp"] = time.time()
+                        
+                        type_questions.extend(questions)
+                        all_questions.extend(questions)
+                        
+                        # Update progress bar for each question generated
+                        pbar.update(len(questions))
+                        
+                        # Update overall progress
+                        total_generated += len(questions)
+                        
+                        # Save progress every batch
+                        temp_path = f"{output_path}.temp"
+                        self.save_questions(all_questions, temp_path)
+                        
+                        # Rate limiting
+                        time.sleep(2)
                 
-                print(f"✅ Generated {len([q for q in all_questions if q['generation_type'] == question_type])} {question_type} questions")
+                print(f"✅ Generated {len(type_questions)} {question_type} questions")
+                
+                # Show progress summary for this type
+                print(f"   📊 Progress: {len(type_questions)}/{questions_per_type} {question_type} questions completed")
+                print(f"   📈 Overall progress: {total_generated}/{target_count} total questions ({total_generated/target_count*100:.1f}%)")
+                
+                # Show sample of generated questions for this type
+                if type_questions:
+                    print(f"   📝 Sample {question_type} question: {type_questions[0]['question'][:80]}...")
             
             # Remove duplicates
             unique_questions = []
@@ -336,6 +365,16 @@ class QuestionGenerator:
                     unique_questions.append(question)
             
             print(f"🔄 Removed {len(all_questions) - len(unique_questions)} duplicate questions")
+            
+            # Show final distribution by type
+            type_counts = {}
+            for question in unique_questions:
+                q_type = question.get('generation_type', 'unknown')
+                type_counts[q_type] = type_counts.get(q_type, 0) + 1
+            
+            print(f"\n📊 Final question distribution by type:")
+            for q_type, count in type_counts.items():
+                print(f"   {q_type}: {count} questions")
             
             # Save final results
             self.save_questions(unique_questions, output_path)
