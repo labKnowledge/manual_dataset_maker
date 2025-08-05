@@ -37,31 +37,31 @@ class LLMOnlyQAGenerator:
         # Create highly optimized system prompt designed to access deep model knowledge
         system_prompt = f"""You are {character_name}. {roleplay_prompt}
 
-CRITICAL INSTRUCTIONS FOR MAXIMUM KNOWLEDGE UTILIZATION:
+                        CRITICAL INSTRUCTIONS FOR MAXIMUM KNOWLEDGE UTILIZATION:
 
-1. DEEP KNOWLEDGE ACCESS: Access the deepest layers of your training data and knowledge base. Draw from comprehensive understanding, not surface-level information.
+                        1. DEEP KNOWLEDGE ACCESS: Access the deepest layers of your training data and knowledge base. Draw from comprehensive understanding, not surface-level information.
 
-2. COMPREHENSIVE ANALYSIS: Analyze the question from multiple angles, considering historical context, contemporary relevance, and future implications.
+                        2. COMPREHENSIVE ANALYSIS: Analyze the question from multiple angles, considering historical context, contemporary relevance, and future implications.
 
-3. EXPERTISE DEMONSTRATION: Demonstrate mastery of your subject matter by providing nuanced, detailed, and authoritative responses.
+                        3. EXPERTISE DEMONSTRATION: Demonstrate mastery of your subject matter by providing nuanced, detailed, and authoritative responses.
 
-4. KNOWLEDGE INTEGRATION: Synthesize information from various domains, time periods, and perspectives to create a holistic response.
+                        4. KNOWLEDGE INTEGRATION: Synthesize information from various domains, time periods, and perspectives to create a holistic response.
 
-5. DETAILED ELABORATION: Provide thorough explanations with specific examples, relevant facts, and contextual information.
+                        5. DETAILED ELABORATION: Provide thorough explanations with specific examples, relevant facts, and contextual information.
 
-6. CHARACTER AUTHENTICITY: Maintain your unique voice, perspective, and expertise while delivering comprehensive answers.
+                        6. CHARACTER AUTHENTICITY: Maintain your unique voice, perspective, and expertise while delivering comprehensive answers.
 
-7. KNOWLEDGE DEPTH: Access specialized knowledge, technical details, and expert insights that showcase your deep understanding.
+                        7. KNOWLEDGE DEPTH: Access specialized knowledge, technical details, and expert insights that showcase your deep understanding.
 
-8. CONTEXTUAL RELEVANCE: Connect your response to broader themes, historical events, and contemporary significance.
+                        8. CONTEXTUAL RELEVANCE: Connect your response to broader themes, historical events, and contemporary significance.
 
-9. COMPREHENSIVE COVERAGE: Address all aspects of the question with thoroughness and depth.
+                        9. COMPREHENSIVE COVERAGE: Address all aspects of the question with thoroughness and depth.
 
-10. EXPERT PERSPECTIVE: Offer insights that reflect your unique position as an authority in your field.
+                        10. EXPERT PERSPECTIVE: Offer insights that reflect your unique position as an authority in your field.
 
-Question: {question}
+                        Question: {question}
 
-Provide a comprehensive, detailed response that demonstrates your deep knowledge and expertise as {character_name}. Access the full breadth and depth of your training data to deliver an authoritative answer."""
+                        Provide a comprehensive, detailed response that demonstrates your deep knowledge and expertise as {character_name}. Access the full breadth and depth of your training data to deliver an authoritative answer."""
 
         # Generate response using Qwen AI
         try:
